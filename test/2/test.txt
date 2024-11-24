@@ -1,0 +1,6 @@
+1
+test/2/in.txt
+test/2/com.txt
+2
+test/2/com.txt
+test/2/decom.txt
