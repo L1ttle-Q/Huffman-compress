@@ -77,7 +77,7 @@ private:
                 Q.push(new Node(static_cast<u_char>(i), M_list[i]));
 
         if (Q.empty()) return ;
-        if (Q.size() == 1) {M_to[Q.top()->c].dat = std::string("0"); return ;}
+        if (Q.size() == 1) {root = Q.top(); return ;}
 
         Node *q1, *q2;
         while (Q.size() > 1)
@@ -94,7 +94,7 @@ private:
 
     void Get_Code(Node* rt, std::string s)
     {
-        if (!rt->lch && !rt->rch) {M_to[rt->c].dat = s; return ;}
+        if (!rt->lch && !rt->rch) {M_to[rt->c].dat = s.empty() ? "0" : s; return ;}
         if (rt->lch) Get_Code(rt->lch, s + '0');
         if (rt->rch) Get_Code(rt->rch, s + '1');
     }
@@ -108,7 +108,7 @@ private:
     }
 
 public:
-    Huffman() {fp_in = stdin; fp_out = stdout;}
+    Huffman() : fp_in(stdin), fp_out(stdout), M_list{}, textLength(0), root(nullptr) {}
     Huffman(FILE *in): Huffman() { if (in) fp_in = in; }
     Huffman(FILE *in, FILE *out): Huffman()
     {

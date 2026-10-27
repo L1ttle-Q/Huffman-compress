@@ -110,6 +110,7 @@ private:
 
     void ReadDict()
     {
+        Read_binary(fp_in, true); // Each archive starts at a byte boundary.
         size_t size_M;
         fread(&size_M, sizeof(uint32_t), 1, fp_in);
         for (size_t i = 0; i < size_M; ++i)

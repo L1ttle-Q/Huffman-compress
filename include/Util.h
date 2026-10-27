@@ -3,6 +3,9 @@
 
 #include <cstdio>
 #include <iostream>
+#include <cstdint>
+
+using u_char = unsigned char;
 
 #define size_t uint32_t
 

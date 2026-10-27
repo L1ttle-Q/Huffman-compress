@@ -6,7 +6,7 @@
 const int MaxFileNameLength = 50,
           MaxCommandLength = 150;
 
-int main()
+int main(int argc, char* argv[])
 {
     fprintf(stdout, "Test num:");
     int num = 0;
@@ -28,24 +28,29 @@ int main()
     else fclose(fp);
 
     char command_1[MaxCommandLength];
-    snprintf(command_1, MaxCommandLength, "make/huffman < %s", test_file);
+    #ifdef _WIN32
+    const char* default_executable = "build\\huffman.exe";
+    #else
+    const char* default_executable = "build/huffman";
+    #endif
+    snprintf(command_1, MaxCommandLength, "\"%s\" < %s", argc > 1 ? argv[1] : default_executable, test_file);
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    system(command_1);
+    if (system(command_1) != 0) return 1;
 
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "\nElapsed time: " << elapsed.count() << " ms" << std::endl;
 
     char command_2[MaxCommandLength];
-    #ifdef _WIN64
-    snprintf(command_2, MaxCommandLength, "fc %s %s", in_file, decom_file);
+    #ifdef _WIN32
+    for (char* p = in_file; *p; ++p) if (*p == '/') *p = '\\';
+    for (char* p = decom_file; *p; ++p) if (*p == '/') *p = '\\';
+    snprintf(command_2, MaxCommandLength, "fc /b \"%s\" \"%s\"", in_file, decom_file);
     #else
     snprintf(command_2, MaxCommandLength, "diff %s %s && echo \"Files are identical.\"", in_file, decom_file);
     #endif
 
-    system(command_2);
-
-    return 0;
+    return system(command_2) == 0 ? 0 : 1;
 }
